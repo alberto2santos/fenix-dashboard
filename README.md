@@ -7,11 +7,14 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://fenix-dashboard.vercel.app/)
 
 O **Fênix II Dashboard** é uma aplicação web de alta performance para monitoramento
 em tempo real de métricas de soldagem por área. Permite importar dados via CSV,
 visualizar KPIs, gráficos e tabelas interativas, e exportar relatórios em PDF e PNG
 através de um servidor headless Chromium (Playwright).
+
+🌐 **[Acessar o Dashboard](https://fenix-dashboard.vercel.app/)**
 
 ---
 
@@ -73,7 +76,7 @@ através de um servidor headless Chromium (Playwright).
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/<SEU_USUARIO>/fenix-dashboard.git
+git clone https://github.com/alberto2santos/fenix-dashboard.git
 cd fenix-dashboard
 
 # 2. Instale as dependências
@@ -217,15 +220,15 @@ fenix-dashboard/
 
 ## 🌐 Deploy
 
-O projeto ainda não possui deploy público.
+O projeto está publicado na **Vercel**:
 
-Para fazer o deploy em plataformas como **Vercel** ou **Netlify**:
+🔗 **[https://fenix-dashboard.vercel.app/](https://fenix-dashboard.vercel.app/)**
+
+Para rodar o build de produção localmente:
 
 ```bash
-# Build de produção
 npm run build
-
-# O conteúdo da pasta dist/ é o que deve ser publicado
+npm run preview
 ```
 
 > ⚠️ O servidor de exportação (`server/export.js`) requer um ambiente

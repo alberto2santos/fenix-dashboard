@@ -9,7 +9,7 @@
 /* ─── Fonte Inter (arquivo local) ─────────────────────────── */
 @font-face {
   font-family: 'Inter';
-  src: url('@/assets/fonts/Inter-Variable.woff2') format('woff2-variations');
+  src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -299,29 +299,89 @@
 }
 
 /* ============================================================
-   PRINT
+   PRINT — corrigido para Chromium (window.print)
    ============================================================ */
 @media print {
-  body {
-    background: #ffffff !important;
-    color:      #000000 !important;
+
+  /* ─── Página A4 landscape ───────────────────────────────── */
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
   }
 
+  /* ─── Força renderização de cores e fundos escuros ─────── */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust:         exact !important;
+  }
+
+  /* ─── Remove transforms que quebram layout no Chromium ─── */
+  * {
+    transform:  none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body {
+    background: #0a0a0f !important;
+    color:      #ffffff !important;
+    min-height: unset !important;
+  }
+
+  /* ─── Layout linear — sem flex/grid complexo ────────────── */
+  main,
+  [aria-label*='principal'] {
+    display:   block !important;
+    padding:   0 !important;
+    max-width: none !important;
+  }
+
+  /* ─── Corrige overflow do Comparativo por Área ──────────── */
+  [class*='BarChart'],
+  [class*='ChartsSection'],
+  [class*='GaugeChart'],
+  [class*='HistoryChart'] {
+    overflow:  visible !important;
+    max-width: 100% !important;
+    width:     100% !important;
+    contain:   layout !important;
+    page-break-inside: avoid;
+    break-inside:      avoid;
+  }
+
+  /* ─── Evita quebra de página no meio de cards ───────────── */
+  .card,
+  [class*='KpiCard'],
+  [class*='DataTable'],
+  [class*='ChartsSection'] > * {
+    break-inside:      avoid;
+    page-break-inside: avoid;
+  }
+
+  /* ─── Esconde elementos desnecessários na impressão ─────── */
   .no-print,
   button,
-  nav {
+  nav,
+  [class*='SettingsDrawer'],
+  [class*='UploadSection'],
+  [class*='AppFooter'] {
     display: none !important;
   }
 
+  /* ─── Wrapper sem restrições de largura ─────────────────── */
   .page-wrapper {
     padding:   0 !important;
     max-width: none !important;
   }
 
-  /* Evita quebra de página no meio de cards */
-  .card,
-  [class*='KpiCard'],
-  [class*='DataTable'] {
-    break-inside: avoid;
+  /* ─── Tabela ocupa largura total ────────────────────────── */
+  .table-responsive {
+    overflow:   visible !important;
+    background: none !important;
+  }
+
+  /* ─── Links visíveis na impressão ───────────────────────── */
+  a[href]::after {
+    content: none !important;
   }
 }

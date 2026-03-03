@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+
+  <!-- Fundo com gradiente sutil -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#111118"/>
+      <stop offset="100%" stop-color="#0a0a0f"/>
+    </linearGradient>
+
+    <!-- Gradiente da chama: branco/amarelo no topo → laranja escuro na base -->
+    <linearGradient id="flameGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%"   stop-color="#fef3c7"/>   <!-- quase branco quente -->
+      <stop offset="40%"  stop-color="#f59e0b"/>   <!-- âmbar principal -->
+      <stop offset="100%" stop-color="#d97706"/>   <!-- âmbar escuro na base -->
+    </linearGradient>
+
+    <!-- Gradiente da asa/sombra esquerda -->
+    <linearGradient id="wingGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="32" height="32" rx="7" fill="url(#bgGrad)"/>
+
+  <!-- Borda sutil âmbar (opcional — dá profundidade) -->
+  <rect width="32" height="32" rx="7"
+        stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.2" fill="none"/>
+
+  <!-- Asa esquerda (sombra/profundidade) -->
+  <path d="M16 5 L16 23 L4 28 Z"
+        fill="url(#wingGrad)" opacity="0.85"/>
+
+  <!-- Chama principal -->
+  <path d="M16 5 L28 28 L16 23 Z"
+        fill="url(#flameGrad)"/>
+
+  <!-- Brilho central — ponto quente da chama -->
+  <path d="M16 5 L21 19 L16 17 Z"
+        fill="#fef9ee" opacity="0.35"/>
+
+</svg>

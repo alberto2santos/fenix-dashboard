@@ -1,0 +1,284 @@
+/* ============================================================
+   index.css — Estilos globais do Fênix II Dashboard
+   - Fonte Inter via @font-face (arquivo local)
+   - Reset mínimo compatível com Tailwind
+   - Scrollbar customizada (estilo industrial)
+   - Animações e utilitários globais
+   ============================================================ */
+
+/* ─── Fonte Inter (arquivo local) ─────────────────────────── */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Diretivas Tailwind ───────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   BASE GLOBAL
+   ============================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* ✅ Evita zoom indesejado em inputs no iOS */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0a0a0f;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* ✅ Mínimo de altura para o fundo cobrir a tela toda */
+    min-height: 100dvh;
+    /* ✅ Previne scroll horizontal acidental em mobile */
+    overflow-x: hidden;
+  }
+
+  /* ✅ Tipografia fluida — escala suavemente entre mobile e desktop */
+  h1 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+  h2 { font-size: clamp(1rem,   2vw,   1.25rem);  }
+  h3 { font-size: clamp(0.875rem, 1.5vw, 1rem);   }
+
+  /* Foco acessível — visível só via teclado, nunca via mouse */
+  :focus-visible {
+    outline:        2px solid #f59e0b;
+    outline-offset: 3px;
+    border-radius:  4px;
+    /* ✅ Sombra extra para fundo escuro — mais legível */
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+  }
+
+  /* Remove outline padrão do browser */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* ✅ Seleção de texto com cor da marca */
+  ::selection {
+    background-color: rgba(245, 158, 11, 0.25);
+    color: #ffffff;
+  }
+
+  /* ✅ Imagens responsivas por padrão */
+  img,
+  svg {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+/* ============================================================
+   SCROLLBAR CUSTOMIZADA
+   ============================================================ */
+@layer utilities {
+  /* Webkit — Chrome, Edge, Safari */
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #0d0d14; }
+  ::-webkit-scrollbar-thumb {
+    background:    #2a2a3a;
+    border-radius: 10px;
+    transition:    background 0.2s ease;
+  }
+  ::-webkit-scrollbar-thumb:hover  { background: #f59e0b; }
+  ::-webkit-scrollbar-corner       { background: #0d0d14; }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a3a #0d0d14;
+  }
+}
+
+/* ============================================================
+   ANIMAÇÕES GLOBAIS
+   ============================================================ */
+@layer utilities {
+
+  /* Skeleton shimmer */
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #16161f 25%,
+      #1e1e2e 50%,
+      #16161f 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+    border-radius: 6px;
+  }
+
+  /* Fade in suave */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+
+  .animate-fade_in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  /* Pulse da borda crítica */
+  @keyframes pulseBorder {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(239, 68, 68, 0.4); }
+    50%       { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);   }
+  }
+
+  .animate-pulse_border {
+    animation: pulseBorder 2s ease-in-out infinite;
+  }
+
+  /* Spin suave (ícone de loading) */
+  @keyframes spinSlow {
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-spin {
+    animation: spinSlow 0.8s linear infinite;
+  }
+
+  /* ✅ Respeita preferência de redução de movimento */
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton,
+    .animate-fade_in,
+    .animate-pulse_border,
+    .animate-spin {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* ============================================================
+   UTILITÁRIOS CUSTOMIZADOS
+   ============================================================ */
+@layer utilities {
+
+  /* Texto com gradiente âmbar */
+  .text-gradient-amber {
+    background:             linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip:         text;
+  }
+
+  /* Linha separadora com brilho âmbar */
+  .divider-amber {
+    height:     1px;
+    background: linear-gradient(90deg, transparent, rgba(245,158,11,0.5), transparent);
+    border:     none;
+  }
+
+  /* ✅ Card com brilho âmbar no hover */
+  .glow-amber-hover {
+    transition: box-shadow 0.25s ease;
+  }
+  .glow-amber-hover:hover {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.12),
+                0 0 40px rgba(245, 158, 11, 0.06);
+  }
+
+  /* ✅ Glassmorphism leve para modais / overlays */
+  .glass {
+    background:       rgba(22, 22, 31, 0.75);
+    backdrop-filter:  blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border:           1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* ✅ Números tabulares (tabelas e KPIs) */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  /* ✅ Trunca texto com ellipsis em uma linha */
+  .truncate-line {
+    overflow:      hidden;
+    white-space:   nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* ✅ Área clicável maior em mobile sem mudar layout */
+  .touch-target {
+    position: relative;
+  }
+  .touch-target::after {
+    content:  '';
+    position: absolute;
+    inset:    -8px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE GLOBAL
+   ============================================================ */
+@layer base {
+
+  /* ✅ Padding lateral fluido — respira em mobile, espaça no desktop */
+  .page-wrapper {
+    width:      100%;
+    max-width:  1440px;
+    margin:     0 auto;
+    padding:    1rem;
+  }
+
+  @media (min-width: 640px)  { .page-wrapper { padding: 1.5rem; } }
+  @media (min-width: 1024px) { .page-wrapper { padding: 2rem;   } }
+  @media (min-width: 1280px) { .page-wrapper { padding: 2.5rem; } }
+
+  /* ✅ Texto não quebra palavras longas em mobile */
+  p, li, td, th {
+    overflow-wrap: break-word;
+    word-break:    break-word;
+  }
+
+  /* ✅ Tabelas com scroll horizontal em telas pequenas */
+  .table-responsive {
+    width:      100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  body {
+    background: #ffffff !important;
+    color:      #000000 !important;
+  }
+
+  /* Esconde elementos desnecessários na impressão */
+  .no-print,
+  button,
+  nav {
+    display: none !important;
+  }
+
+  /* Garante que cards ocupem a largura toda na impressão */
+  .page-wrapper {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}

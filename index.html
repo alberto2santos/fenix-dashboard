@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- ─── SEO ─────────────────────────────────────── -->
+    <meta name="author"      content="Alberto Luiz" />
+    <meta name="description" content="Fênix II — Dashboard de monitoramento de soldagem. Acompanhe avanço real, saldo e metas por área em tempo real." />
+    <meta name="keywords"    content="dashboard, soldagem, engenharia, monitoramento, fênix, projeto fênix II" />
+    <meta name="robots"      content="noindex, nofollow" />  <!-- app interno — não indexar -->
+
+    <!-- ─── Open Graph (compartilhamento) ────────────── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Fênix II — Dashboard de Soldagem" />
+    <meta property="og:description" content="Monitoramento de avanço, saldo e metas de soldagem por área." />
+    <meta property="og:image"       content="/og-preview.png" />
+
+    <!-- ─── PWA / Mobile ─────────────────────────────── -->
+    <meta name="theme-color"                content="#0a0a0f" />
+    <meta name="color-scheme"               content="dark" />
+    <meta name="apple-mobile-web-app-capable"         content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title"            content="Fênix II" />
+
+    <!-- ─── Favicon ──────────────────────────────────── -->
+    <link rel="icon"             type="image/svg+xml" href="/fenix-icon.svg" />
+    <link rel="apple-touch-icon"                      href="/apple-touch-icon.png" />
+
+    <!-- ─── Preconnect (performance) ─────────────────── -->
+    <link rel="preconnect"    href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch"  href="https://fonts.gstatic.com" />
+
+    <!-- ─── Preload da fonte principal ───────────────── -->
+    <link
+      rel="preload"
+      href="/fonts/Inter-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <title>Fênix II — Dashboard de Soldagem</title>
+  </head>
+
+  <body class="bg-fenix-bg text-white antialiased">
+
+    <!-- Acessibilidade: skip link para teclado -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-amber focus:text-fenix-bg focus:rounded-lg focus:font-semibold"
+    >
+      Pular para o conteúdo
+    </a>
+
+    <!-- Root do React -->
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

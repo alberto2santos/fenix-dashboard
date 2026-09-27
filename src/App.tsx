@@ -4,6 +4,7 @@
 // ============================================================
 
 import { useState, useCallback }  from 'react'
+import { Analytics }              from '@vercel/analytics/react'
 import { AppHeader }              from '@/components/AppHeader/AppHeader'
 import { AppFooter }              from '@/components/AppFooter/AppFooter'
 import { UploadSection }          from '@/components/UploadSection/UploadSection'
@@ -87,6 +88,8 @@ export default function App() {
       </main>
 
       <AppFooter />
+
+      <Analytics />
 
     </div>
   )

@@ -1,4 +1,4 @@
-import ReactECharts          from 'echarts-for-react'
+import { EChartsView }       from '@/components/charts/EChartsView'
 import { useMemo }           from 'react'
 import { getStatusColor }    from '@/utils/colorRules'
 
@@ -87,7 +87,7 @@ export function GaugeChart({ progresso }: GaugeChartProps) {
       </h2>
       <p className="text-xs text-steel mb-4">Avanço total de soldas do projeto</p>
 
-      <ReactECharts
+      <EChartsView
         option={option}
         style={{ height: '280px', width: '100%' }}
         opts={{ renderer: 'canvas' }}

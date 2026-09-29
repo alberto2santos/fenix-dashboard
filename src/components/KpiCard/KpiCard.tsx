@@ -46,7 +46,7 @@ export const KpiCard = memo(function KpiCard({
     <article
       className={clsx(
         'relative rounded-xl p-5 bg-fenix-card border transition-all duration-300',
-        'hover:shadow-cardHov hover:bg-fenix-cardHover animate-fade_in',
+        'hover:shadow-card-hov hover:bg-fenix-cardHover animate-fade_in',
         highlight
           ? 'border-amber shadow-amber'
           : 'border-fenix-border hover:border-fenix-borderAlt',
@@ -140,7 +140,7 @@ export const KpiCard = memo(function KpiCard({
       {/* Linha decorativa inferior no card destacado */}
       {highlight && (
         <div
-          className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-xl bg-gradient-to-r from-transparent via-amber to-transparent"
+          className="kpi-highlight-line absolute bottom-0 left-0 right-0 h-0.5 rounded-b-xl"
           aria-hidden="true"
         />
       )}

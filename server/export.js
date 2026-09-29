@@ -34,6 +34,59 @@ function sendError(res, status, message) {
   res.end(JSON.stringify({ error: message }))
 }
 
+async function handleAlerts(req, res) {
+  const provider = process.env.ALERT_WEBHOOK_PROVIDER?.toLowerCase() ?? 'custom'
+  const webhookUrl = process.env.ALERT_WEBHOOK_URL
+  const configured = Boolean(webhookUrl)
+    && (provider !== 'whatsapp' || Boolean(process.env.ALERT_WEBHOOK_TOKEN && process.env.ALERT_WEBHOOK_TO))
+
+  if (req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
+    res.end(JSON.stringify({ configured, provider }))
+    return
+  }
+  if (req.method !== 'POST') return sendError(res, 405, 'Método não permitido')
+  if (!configured) return sendError(res, 503, 'Webhook não configurado no servidor')
+
+  let body
+  try {
+    body = await parseBody(req)
+  } catch (err) {
+    return sendError(res, 400, err.message)
+  }
+
+  const events = Array.isArray(body?.events)
+    ? body.events.filter((event) => event && typeof event.area === 'string'
+      && Number.isFinite(event.progress) && Number.isFinite(event.threshold)).slice(0, 100)
+    : []
+  if (events.length === 0) return sendError(res, 400, 'Nenhum evento válido foi enviado')
+
+  const text = events.map((event) =>
+    `${event.area}: ${event.progress.toFixed(1)}% de avanço (limiar ${event.threshold.toFixed(1)}%)${event.shift ? ` · Turno ${event.shift}` : ''}`,
+  ).join('\n')
+  const payload = provider === 'whatsapp'
+    ? { messaging_product: 'whatsapp', to: process.env.ALERT_WEBHOOK_TO, type: 'text', text: { body: text } }
+    : provider === 'slack' || provider === 'teams'
+      ? { text }
+      : { text, events }
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(process.env.ALERT_WEBHOOK_TOKEN ? { Authorization: `Bearer ${process.env.ALERT_WEBHOOK_TOKEN}` } : {}),
+      },
+      body: JSON.stringify(payload),
+    })
+    if (!response.ok) return sendError(res, 502, `O webhook retornou HTTP ${response.status}`)
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
+    res.end(JSON.stringify({ sent: events.length }))
+  } catch {
+    return sendError(res, 502, 'Não foi possível alcançar o webhook configurado')
+  }
+}
+
 // ─── Valida URL recebida ──────────────────────────────────────
 function isValidUrl(raw) {
   try {
@@ -123,7 +176,7 @@ const server = http.createServer(async (req, res) => {
 
   // CORS para o Vite dev server
   res.setHeader('Access-Control-Allow-Origin',  ALLOWED_ORIGIN)
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   // Preflight
@@ -134,6 +187,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   const { pathname } = parse(req.url ?? '')
+
+  if (pathname === '/api/alerts') {
+    await handleAlerts(req, res)
+    return
+  }
 
   if (req.method === 'POST' && pathname === '/api/export') {
     await handleExport(req, res)

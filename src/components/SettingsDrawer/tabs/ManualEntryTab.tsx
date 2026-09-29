@@ -15,6 +15,7 @@ interface FormState {
   saldoSoldas:      string
   porcentagem:      string
   dataReferencia:   string
+  turno:            string
 }
 
 const EMPTY_FORM: FormState = {
@@ -24,6 +25,7 @@ const EMPTY_FORM: FormState = {
   saldoSoldas:      '',
   porcentagem:      '',
   dataReferencia:   new Date().toISOString().split('T')[0],
+  turno:            '',
 }
 
 const FIELD_CONFIG: {
@@ -101,6 +103,7 @@ export function ManualEntryTab({ onAdd }: ManualEntryTabProps) {
       totalPrevisto:    previsto,
       porcentagem:      parseFloat(porcentagem.toFixed(2)),
       dataReferencia:   raw.dataReferencia || new Date().toISOString().split('T')[0],
+      turno:            raw.turno || undefined,
     }
   }
 
@@ -156,8 +159,8 @@ export function ManualEntryTab({ onAdd }: ManualEntryTabProps) {
               readOnly={isReadOnly(key)}
               className={`
                 w-full px-3 py-2 rounded-lg text-sm bg-fenix-card border
-                placeholder:text-steel/40 transition-colors
-                focus:outline-none focus:ring-2 focus:ring-amber/30 focus:border-amber
+                placeholder:text-steel-muted-40 transition-colors
+                focus:outline-none focus:ring-2 focus:ring-amber-ring focus:border-amber
                 ${isReadOnly(key)
                   ? 'text-steel cursor-not-allowed border-fenix-border opacity-50'
                   : errors[key]
@@ -168,10 +171,27 @@ export function ManualEntryTab({ onAdd }: ManualEntryTabProps) {
             {errors[key] ? (
               <p className="mt-1 text-xs text-status-critical">{errors[key]}</p>
             ) : (
-              <p className="mt-1 text-xs text-steel/60">{hint}</p>
+              <p className="mt-1 text-xs text-steel-muted-60">{hint}</p>
             )}
           </div>
         ))}
+        <div>
+          <label htmlFor="manual-shift" className="mb-1 block text-xs font-medium text-steel">
+            Turno operacional (opcional)
+          </label>
+          <select
+            id="manual-shift"
+            value={form.turno}
+            onChange={(event) => handleChange('turno', event.target.value)}
+            className="w-full rounded-lg border border-fenix-border bg-fenix-card px-3 py-2 text-sm text-white focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber-ring"
+          >
+            <option value="">Sem turno</option>
+            <option value="A">Turno A · 06:00–14:00</option>
+            <option value="B">Turno B · 14:00–22:00</option>
+            <option value="C">Turno C · 22:00–06:00</option>
+          </select>
+          <p className="mt-1 text-xs text-steel-muted-60">Usado no filtro por turno do dashboard.</p>
+        </div>
       </div>
 
       {(form.area || form.soldasRealizadas || form.totalPrevisto) && (

@@ -30,7 +30,7 @@ export function SettingsDrawer({ isOpen, onClose, onDataAdd }: Props) {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 animate-fade_in"
+        className="fixed inset-0 bg-overlay-black z-40 animate-fade_in"
         onClick={onClose}
         aria-hidden="true"
       />

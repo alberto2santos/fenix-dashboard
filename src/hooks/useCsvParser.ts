@@ -3,8 +3,10 @@ import Papa                                 from 'papaparse'
 import { useQueryClient }                   from '@tanstack/react-query'
 import { SoldaRowSchema, mapRawRow }        from '@/schemas/soldaSchema'
 import type { SoldaRow }                    from '@/schemas/soldaSchema'
+import { mergeSnapshotHistory, selectLatestSnapshots } from '@/utils/snapshotHistory'
 
 export const SOLDA_QUERY_KEY = ['solda-data'] as const
+export const SOLDA_HISTORY_QUERY_KEY = ['solda-history'] as const
 
 interface UseCsvParserOptions {
   onSuccess?: (rows: SoldaRow[]) => void
@@ -42,8 +44,6 @@ export function useCsvParser({ onSuccess }: UseCsvParserOptions = {}): UseCsvPar
       complete: (results) => {
         try {
           const headers = results.meta.fields ?? []
-          console.log('[Fênix II] Cabeçalhos encontrados no CSV:', headers)
-          console.log('[Fênix II] Total de linhas brutas:', results.data.length)
 
           const validRows:   SoldaRow[] = []
           const parseErrors: string[]   = []
@@ -99,8 +99,10 @@ export function useCsvParser({ onSuccess }: UseCsvParserOptions = {}): UseCsvPar
           }
 
           // Sucesso
-          console.log(`[Fênix II] ${validRows.length} linhas válidas carregadas:`, validRows)
-          queryClient.setQueryData(SOLDA_QUERY_KEY, validRows)
+          const history = queryClient.getQueryData<SoldaRow[]>(SOLDA_HISTORY_QUERY_KEY) ?? []
+          const mergedHistory = mergeSnapshotHistory(history, validRows)
+          queryClient.setQueryData(SOLDA_HISTORY_QUERY_KEY, mergedHistory)
+          queryClient.setQueryData(SOLDA_QUERY_KEY, selectLatestSnapshots(mergedHistory))
           setData(validRows)
           onSuccess?.(validRows)
 

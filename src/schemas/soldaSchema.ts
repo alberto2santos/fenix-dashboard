@@ -57,10 +57,21 @@ export const SoldaRowSchema = z.object({
         .max(100, 'Porcentagem não pode ultrapassar 100%')
     ),
 
-  dataReferencia: z
-    .string()
-    .optional()
-    .default(() => new Date().toISOString().split('T')[0]),
+  dataReferencia: z.preprocess(
+    (value) => typeof value === 'string' && value.trim() === '' ? undefined : value,
+    z.string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data deve estar no formato YYYY-MM-DD')
+      .refine((value) => {
+        const parsedDate = new Date(`${value}T12:00:00Z`)
+        return !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().startsWith(value)
+      }, 'Data de referência inválida')
+      .optional()
+      .default(() => new Date().toISOString().split('T')[0]),
+  ),
+
+  turno: z
+    .enum(['A', 'B', 'C'])
+    .optional(),
 })
 
 export type SoldaRow = z.infer<typeof SoldaRowSchema>
@@ -78,6 +89,9 @@ export const CSV_HEADER_MAP: Record<string, keyof SoldaRow> = {
   'total_previsto':     'totalPrevisto',
   'porcentagem':        'porcentagem',
   'data_referencia':    'dataReferencia',
+  'turno':              'turno',
+  'Turno':              'turno',
+  'TURNO':              'turno',
 
   // Formato legado (Excel / Pivot Table pt-BR)
   'Rótulos de Linha':             'area',

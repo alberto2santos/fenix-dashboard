@@ -203,7 +203,7 @@ export const DataTable = memo(function DataTable({
                   <tr
                     key={`${row.area}-${i}`}
                     className={clsx(
-                      'border-b border-fenix-border/50 transition-colors duration-150',
+                      'border-b border-fenix-border-tint transition-colors duration-150',
                       'hover:bg-fenix-cardHover cursor-pointer',
                       isActive && 'bg-amber-glow',
                     )}

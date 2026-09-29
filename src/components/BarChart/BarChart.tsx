@@ -4,7 +4,7 @@
 // - Área ativa destacada, demais com opacidade reduzida
 // ============================================================
 
-import ReactECharts          from 'echarts-for-react'
+import { EChartsView }       from '@/components/charts/EChartsView'
 import { useCallback, useMemo } from 'react'
 import type { AreaChartData }   from '@/hooks/useDashboardData'
 
@@ -130,7 +130,7 @@ export function BarChart({ data, onBarClick, activeArea }: BarChartProps) {
         )}
       </p>
 
-      <ReactECharts
+      <EChartsView
         option={option}
         style={{ height: `${Math.max(200, reversed.length * 36)}px`, width: '100%' }}
         opts={{ renderer: 'canvas' }}

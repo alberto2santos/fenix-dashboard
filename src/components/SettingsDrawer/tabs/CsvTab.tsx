@@ -11,18 +11,16 @@ import Papa                                           from 'papaparse'
 import { SoldaRowSchema, mapRawRow }                  from '@/schemas/soldaSchema'
 import type { SoldaRow }                              from '@/schemas/soldaSchema'
 import { useQueryClient }                             from '@tanstack/react-query'
-import { SOLDA_QUERY_KEY }                            from '@/hooks/useCsvParser'
+import { SOLDA_HISTORY_QUERY_KEY }                   from '@/hooks/useCsvParser'
 import type { CsvTabProps }                           from '../SettingsDrawer.types'
 
 // ─── Modelo CSV para download ─────────────────────────────────
 const CSV_TEMPLATE = [
-  'area,soldas_realizadas,saldo_soldas,total_previsto,porcentagem,data_referencia',
-  'AREA-A,120,30,150,0.80,2026-03-02',
-  'AREA-B,85,65,150,0.57,2026-03-02',
-  'AREA-C,200,0,200,1.00,2026-03-02',
-  'AREA-D,45,105,150,0.30,2026-03-02',
-  'AREA-E,130,20,150,0.87,2026-03-02',
-  'AREA-F,60,40,100,0.60,2026-03-02',
+  'area,soldas_realizadas,saldo_soldas,total_previsto,porcentagem,data_referencia,turno',
+  'AREA-A,120,30,150,0.80,2026-03-02,A',
+  'AREA-A,135,15,150,0.90,2026-03-03,A',
+  'AREA-B,85,65,150,0.57,2026-03-02,B',
+  'AREA-B,95,55,150,0.63,2026-03-03,B',
 ].join('\n')
 
 // ─── Helper: dispara download de blob ────────────────────────
@@ -46,7 +44,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
   const [message, setMessage]     = useState('')
   const [isDragging, setIsDragging] = useState(false)
 
-  const currentRows = queryClient.getQueryData<SoldaRow[]>(SOLDA_QUERY_KEY) ?? []
+  const currentRows = queryClient.getQueryData<SoldaRow[]>(SOLDA_HISTORY_QUERY_KEY) ?? []
 
   // ── Processa arquivo CSV ──────────────────────────────────
   const processFile = (file: File) => {
@@ -123,6 +121,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
         total_previsto:    r.totalPrevisto,
         porcentagem:       r.porcentagem,
         data_referencia:   r.dataReferencia ?? '',
+        turno:             r.turno ?? '',
       })),
       { delimiter: ';' }   // ponto-e-vírgula para Excel pt-BR
     )
@@ -160,7 +159,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
             py-8 px-4 rounded-xl border-2 border-dashed cursor-pointer
             transition-all text-center
             ${isDragging
-              ? 'border-amber bg-amber/5 scale-[1.01]'
+              ? 'border-amber bg-amber-tint scale-[1.01]'
               : 'border-fenix-border hover:border-fenix-borderAlt hover:bg-fenix-card'}
           `}
         >
@@ -215,7 +214,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
             flex items-center gap-1.5 px-3 py-1.5 rounded-md shrink-0
             bg-fenix-cardHover border border-fenix-border
             text-xs font-medium text-amber
-            hover:border-amber hover:bg-amber/5
+            hover:border-amber hover:bg-amber-tint
             transition-all active:scale-[0.97]
           "
         >
@@ -229,7 +228,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
       {/* ── Exportar dados atuais ──────────────────────────── */}
       <div>
         <p className="text-xs font-medium text-steel mb-1">Exportar dados atuais</p>
-        <p className="text-xs text-steel/60 mb-3">
+        <p className="text-xs text-steel-muted-60 mb-3">
           Exporta as{' '}
           <strong className="text-white">{currentRows.length} área(s)</strong>{' '}
           atualmente carregadas no dashboard como CSV compatível com Excel.
@@ -251,7 +250,7 @@ export function CsvTab({ onImport }: CsvTabProps) {
         </button>
 
         {currentRows.length === 0 && (
-          <p className="text-xs text-steel/50 mt-2 text-center">
+          <p className="text-xs text-steel-muted-50 mt-2 text-center">
             Carregue dados no dashboard para habilitar a exportação.
           </p>
         )}

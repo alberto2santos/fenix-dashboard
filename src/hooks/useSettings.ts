@@ -1,6 +1,7 @@
 import { useState, useEffect }          from 'react'
 import type { z }                       from 'zod'
 import { SettingsSchema }               from '@/schemas/settingsSchema'
+import { readStoredJson, writeStoredJson } from '@/db/dashboardDb'
 
 export type Settings = z.infer<typeof SettingsSchema>
 
@@ -15,24 +16,35 @@ const DEFAULT_SETTINGS: Settings = {
     dataReferencia:   false,
   },
   columnOrder: ['area', 'soldasRealizadas', 'saldoSoldas', 'totalPrevisto', 'porcentagem'],
+  criticalThresholdPercent: 60,
+  areaThresholds: {},
+  browserNotificationsEnabled: false,
+  webhookAlertsEnabled: false,
 }
 
 export function useSettings() {
-  const [settings, setSettings] = useState<Settings>(() => {
-    try {
-      const stored = localStorage.getItem(SETTINGS_KEY)
-      if (!stored) return DEFAULT_SETTINGS
-
-      const parsed = SettingsSchema.safeParse(JSON.parse(stored))  // ← runtime
-      return parsed.success ? parsed.data : DEFAULT_SETTINGS
-    } catch {
-      return DEFAULT_SETTINGS
-    }
-  })
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
-  }, [settings])
+    let active = true
+    void readStoredJson<unknown>(SETTINGS_KEY)
+      .then((stored) => {
+        if (!active) return
+        const parsed = SettingsSchema.safeParse(stored)
+        if (parsed.success) setSettings(parsed.data)
+        setIsLoaded(true)
+      })
+      .catch(() => {
+        if (active) setIsLoaded(true)
+      })
+
+    return () => { active = false }
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) void writeStoredJson(SETTINGS_KEY, settings)
+  }, [settings, isLoaded])
 
   const updateSettings = (patch: Partial<Settings>) => {
     setSettings((prev) => ({ ...prev, ...patch }))

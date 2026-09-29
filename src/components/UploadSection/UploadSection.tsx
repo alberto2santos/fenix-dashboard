@@ -7,7 +7,7 @@
 // ============================================================
 
 import { useRef, useState, useCallback, useId } from 'react'
-import { Upload, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react'
+import { Upload, CheckCircle, AlertCircle, RefreshCw, ArrowDown } from 'lucide-react'
 import { clsx } from 'clsx'
 
 // ─── Props ───────────────────────────────────────────────────
@@ -16,6 +16,7 @@ interface UploadSectionProps {
   isLoading:    boolean
   error:        string | null
   hasData:      boolean
+  onViewData?:  () => void
 }
 
 // ─── Componente ──────────────────────────────────────────────
@@ -24,6 +25,7 @@ export function UploadSection({
   isLoading,
   error,
   hasData,
+  onViewData,
 }: UploadSectionProps) {
   const inputRef             = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -156,12 +158,26 @@ export function UploadSection({
         {/* ── Badge de dados carregados ── */}
         {hasData && !isLoading && !error && (
           <div
-            className="mt-4 flex items-center gap-2 text-xs text-status-ok"
+            className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-status-ok"
             role="status"
             aria-live="polite"
           >
-            <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
-            <span>Dados carregados com sucesso. Carregue um novo CSV para atualizar.</span>
+            <span className="inline-flex items-center gap-2">
+              <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
+              Dados carregados com sucesso.
+            </span>
+            <span className="flex flex-wrap items-center gap-3">
+              <span className="text-steel">Carregue outro CSV para atualizar.</span>
+              {onViewData && (
+                <button
+                  type="button"
+                  onClick={onViewData}
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-semibold text-amber transition-colors hover:bg-amber-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
+                >
+                  Ir para resultados <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              )}
+            </span>
           </div>
         )}
 

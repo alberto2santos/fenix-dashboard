@@ -9,12 +9,17 @@ import { memo }             from 'react'
 import { GaugeChart }       from '@/components/GaugeChart/GaugeChart'
 import { BarChart }         from '@/components/BarChart/BarChart'
 import { HistoryChart }     from '@/components/HistoryChart/HistoryChart'
+import { ForecastPanel }    from '@/components/ForecastPanel/ForecastPanel'
+import { ProductivityHeatmap } from '@/components/ProductivityHeatmap/ProductivityHeatmap'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import type { SoldaRow }    from '@/schemas/soldaSchema'
+import type { ShiftFilter } from '@/utils/snapshotHistory'
 
 // ─── Props ───────────────────────────────────────────────────
 interface ChartsSectionProps {
   rows:        SoldaRow[]
+  history:     SoldaRow[]
+  shift:       ShiftFilter
   onAreaClick: (area: string | null) => void
   activeArea:  string | null
 }
@@ -22,6 +27,8 @@ interface ChartsSectionProps {
 // ─── Componente ──────────────────────────────────────────────
 export const ChartsSection = memo(function ChartsSection({
   rows,
+  history,
+  shift,
   onAreaClick,
   activeArea,
 }: ChartsSectionProps) {
@@ -50,6 +57,11 @@ export const ChartsSection = memo(function ChartsSection({
 
       {/* Linha 2: Histórico (largura total) */}
       <HistoryChart data={areaChartData} />
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ForecastPanel history={history} shift={shift} />
+        <ProductivityHeatmap history={history} shift={shift} />
+      </div>
     </section>
   )
 })

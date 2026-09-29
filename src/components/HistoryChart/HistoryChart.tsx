@@ -5,7 +5,7 @@
 // - Altura dinâmica com base no número de áreas
 // ============================================================
 
-import ReactECharts       from 'echarts-for-react'
+import { EChartsView }    from '@/components/charts/EChartsView'
 import { useMemo }        from 'react'
 import type { AreaChartData } from '@/hooks/useDashboardData'
 
@@ -164,7 +164,7 @@ export function HistoryChart({ data }: HistoryChartProps) {
         Realizado × Previsto × Saldo — todas as áreas
       </p>
 
-      <ReactECharts
+      <EChartsView
         option={option}
         style={{ height: `${chartHeight}px`, width: '100%' }}
         opts={{ renderer: 'canvas' }}

@@ -7,7 +7,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback }       from 'react'
-import { Flame, Clock, Download, Loader2, Settings } from 'lucide-react'
+import { Flame, Clock, Download, Loader2, Settings, WifiOff } from 'lucide-react'
 import { exportDashboard }                        from '@/utils/exportPdf'
 import { SettingsDrawer }                         from '@/components/SettingsDrawer/SettingsDrawer'
 import type { SoldaRow }                          from '@/schemas/soldaSchema'
@@ -33,6 +33,7 @@ function formatDateTime(date: Date): string {
 // ─── Componente ──────────────────────────────────────────────
 export function AppHeader({ lastUpdated, onDataAdd }: AppHeaderProps) {
   const [now, setNow]             = useState(new Date())
+  const [isOnline, setIsOnline]   = useState(() => navigator.onLine)
   const [exporting, setExporting] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -40,6 +41,17 @@ export function AppHeader({ lastUpdated, onDataAdd }: AppHeaderProps) {
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60_000)
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const setOnline = () => setIsOnline(true)
+    const setOffline = () => setIsOnline(false)
+    window.addEventListener('online', setOnline)
+    window.addEventListener('offline', setOffline)
+    return () => {
+      window.removeEventListener('online', setOnline)
+      window.removeEventListener('offline', setOffline)
+    }
   }, [])
 
   const handleExport = useCallback(async () => {
@@ -85,6 +97,13 @@ export function AppHeader({ lastUpdated, onDataAdd }: AppHeaderProps) {
 
             {/* ── Informações, ações e configurações ── */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+
+              {!isOnline && (
+                <div className="flex items-center gap-1.5 text-xs text-amber" role="status">
+                  <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />
+                  Offline · dados neste dispositivo
+                </div>
+              )}
 
               {/* Data de referência do CSV */}
               {lastUpdated && (

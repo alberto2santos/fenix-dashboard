@@ -9,6 +9,8 @@ import ReactDOM                                 from 'react-dom/client'
 import { QueryClient }                          from '@tanstack/react-query'
 import { PersistQueryClientProvider }           from '@tanstack/react-query-persist-client'
 import { createAsyncStoragePersister }          from '@tanstack/query-async-storage-persister'
+import { registerSW }                            from 'virtual:pwa-register'
+import { indexedDbStorage, migrateLocalStorageValue } from './db/dashboardDb'
 import './index.css'
 import App                                      from './App'
 
@@ -31,7 +33,7 @@ const queryClient = new QueryClient({
 
 // ─── Persister assíncrono ────────────────────────────────────
 const persister = createAsyncStoragePersister({
-  storage:      window.localStorage,
+  storage:      indexedDbStorage,
   key:          'fenix-dashboard-cache',
   throttleTime: 1_000,                        // Throttle de 1s — evita writes excessivos
 })
@@ -47,17 +49,25 @@ if (!rootElement) {
 }
 
 // ─── Render ──────────────────────────────────────────────────
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{
-        persister,
-        maxAge:         ONE_DAY,             // Expira cache persistido após 24h
-        buster:         'fenix-v1',          // Invalida cache ao mudar versão
-      }}
-    >
-      <App />
-    </PersistQueryClientProvider>
-  </React.StrictMode>
-)
+async function startApplication() {
+  await migrateLocalStorageValue('fenix-dashboard-cache')
+  await migrateLocalStorageValue('fenix-settings-v1')
+  registerSW({ immediate: true })
+
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister,
+          maxAge: Infinity,
+          buster: 'fenix-v1',
+        }}
+      >
+        <App />
+      </PersistQueryClientProvider>
+    </React.StrictMode>
+  )
+}
+
+void startApplication()

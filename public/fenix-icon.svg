@@ -1,43 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-
-  <!-- Fundo com gradiente sutil -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%"   stop-color="#111118"/>
-      <stop offset="100%" stop-color="#0a0a0f"/>
+    <!-- Gradiente Fênix / Alta Energia (Laranja ardente para Vermelho) -->
+    <linearGradient id="fenixFlame" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626" />
+      <stop offset="40%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#fbbf24" />
     </linearGradient>
 
-    <!-- Gradiente da chama: branco/amarelo no topo → laranja escuro na base -->
-    <linearGradient id="flameGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-      <stop offset="0%"   stop-color="#fef3c7"/>   <!-- quase branco quente -->
-      <stop offset="40%"  stop-color="#f59e0b"/>   <!-- âmbar principal -->
-      <stop offset="100%" stop-color="#d97706"/>   <!-- âmbar escuro na base -->
-    </linearGradient>
+    <!-- Gradiente Núcleo de Plasma (Azul de Solda Elétrica) -->
+    <radialGradient id="plasmaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0" />
+    </radialGradient>
 
-    <!-- Gradiente da asa/sombra esquerda -->
-    <linearGradient id="wingGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%"   stop-color="#d97706"/>
-      <stop offset="100%" stop-color="#92400e"/>
+    <!-- Gradiente Fundo Slate Escuro (Industrial) -->
+    <linearGradient id="bgDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
     </linearGradient>
   </defs>
 
-  <!-- Fundo -->
-  <rect width="32" height="32" rx="7" fill="url(#bgGrad)"/>
+  <!-- Fundo quadrado arredondado industrial -->
+  <rect width="64" height="64" rx="14" fill="url(#bgDark)" />
 
-  <!-- Borda sutil âmbar (opcional — dá profundidade) -->
-  <rect width="32" height="32" rx="7"
-        stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.2" fill="none"/>
+  <!-- Sutil brilho de plasma no ponto de solda -->
+  <circle cx="32" cy="46" r="16" fill="url(#plasmaGlow)" opacity="0.6" />
 
-  <!-- Asa esquerda (sombra/profundidade) -->
-  <path d="M16 5 L16 23 L4 28 Z"
-        fill="url(#wingGrad)" opacity="0.85"/>
+  <!-- A "Fênix em Chamas" baseada em gráfico e solda -->
+  <path d="M 32 8
+           C 35 18, 40 22, 54 22
+           C 44 29, 41 38, 41 46
+           C 47 38, 56 36, 56 36
+           C 48 45, 42 54, 32 58
+           C 22 54, 16 45, 8 36
+           C 8 36, 17 38, 23 46
+           C 23 38, 20 29, 10 22
+           C 24 22, 29 18, 32 8 Z"
+        fill="url(#fenixFlame)" />
 
-  <!-- Chama principal -->
-  <path d="M16 5 L28 28 L16 23 Z"
-        fill="url(#flameGrad)"/>
-
-  <!-- Brilho central — ponto quente da chama -->
-  <path d="M16 5 L21 19 L16 17 Z"
-        fill="#fef9ee" opacity="0.35"/>
-
+  <!-- Ponto de solda central (micro engrenagem) com núcleo elétrico -->
+  <circle cx="32" cy="46" r="4" fill="#38bdf8" stroke="#1e293b" stroke-width="1.5" />
+  <circle cx="32" cy="46" r="1.5" fill="#ffffff" />
 </svg>
